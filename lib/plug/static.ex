@@ -298,6 +298,8 @@ defmodule Plug.Static do
     send_entire_file(conn, path, options)
   end
 
+  defp start_and_end(_range, 0), do: :error
+
   defp start_and_end("-" <> rest, file_size) do
     case Integer.parse(rest) do
       {last, ""} when last > 0 and last <= file_size -> {file_size - last, file_size - 1}

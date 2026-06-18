@@ -502,6 +502,18 @@ defmodule Plug.StaticTest do
       end
     end
 
+    test "ignores range and serves the file when it is zero bytes" do
+      for range <- ["bytes=0-", "bytes=1-", "bytes=10-20"] do
+        conn =
+          conn(:get, "/public/fixtures/empty.txt", [])
+          |> put_req_header("range", range)
+          |> call()
+
+        assert conn.status == 200, "expected 200 for #{range}"
+        assert conn.resp_body == ""
+      end
+    end
+
     test "performs etag negotiation" do
       conn =
         conn(:get, "/public/fixtures/static.txt")
